@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Accident Risk Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .severity-1 { background-color: #f8d7da; color: #721c24; }
+        .severity-2 { background-color: #fff3cd; color: #856404; }
+        .severity-3 { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Road Accident Risk Prediction</h1>
+        <form id="accidentForm">
+            <div class="form-group">
+                <label for="Did_Police_Officer_Attend">Did Police Officer Attend?</label>
+                <select id="Did_Police_Officer_Attend" name="Did_Police_Officer_Attend" required>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="age_of_driver">Age of Driver</label>
+                <input type="number" id="age_of_driver" name="age_of_driver" min="16" max="100" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="vehicle_type">Vehicle Type</label>
+                <select id="vehicle_type" name="vehicle_type" required>
+                    <option value="1">Cycle</option>
+                    <option value="2">Motorcycle</option>
+                    <option value="3">Car</option>
+                    <option value="4">Bus</option>
+                    <option value="5">Truck</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="age_of_vehicle">Age of Vehicle (years)</label>
+                <input type="number" id="age_of_vehicle" name="age_of_vehicle" min="0" max="50" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="engine_cc">Engine CC</label>
+                <input type="number" id="engine_cc" name="engine_cc" min="0" max="10000" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="day">Day of Week</label>
+                <select id="day" name="day" required>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                    <option value="7">Sunday</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="weather">Weather Conditions</label>
+                <select id="weather" name="weather" required>
+                    <option value="1">Fine</option>
+                    <option value="2">Raining</option>
+                    <option value="3">Snowing</option>
+                    <option value="4">Fog/Mist</option>
+                    <option value="5">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="light">Light Conditions</label>
+                <select id="light" name="light" required>
+                    <option value="1">Daylight</option>
+                    <option value="2">Darkness - lights lit</option>
+                    <option value="3">Darkness - lights unlit</option>
+                    <option value="4">Darkness - no lighting</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="roadsc">Road Surface Conditions</label>
+                <select id="roadsc" name="roadsc" required>
+                    <option value="1">Dry</option>
+                    <option value="2">Wet/Damp</option>
+                    <option value="3">Snow</option>
+                    <option value="4">Frost/Ice</option>
+                    <option value="5">Flood</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Gender of Driver</label>
+                <select id="gender" name="gender" required>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="speedl">Speed Limit (mph)</label>
+                <select id="speedl" name="speedl" required>
+                    <option value="10">10 mph</option>
+                    <option value="20">20 mph</option>
+                    <option value="30">30 mph</option>
+                    <option value="40">40 mph</option>
+                    <option value="50">50 mph</option>
+                    <option value="60">60 mph</option>
+                    <option value="70">70 mph</option>
+                </select>
+            </div>
+            
+            <button type="submit">Predict Accident Severity</button>
+        </form>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('accidentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.style.display = 'block';
+                
+                // Map severity levels to descriptions
+                const severityMap = {
+                    '1': 'Fatal Accident',
+                    '2': 'Serious Accident',
+                    '3': 'Slight Accident'
+                };
+                
+                const severityClassMap = {
+                    '1': 'severity-1',
+                    '2': 'severity-2',
+                    '3': 'severity-3'
+                };
+                
+                const severity = data.trim();
+                resultDiv.textContent = `Predicted Severity: ${severityMap[severity] || 'Unknown'}`;
+                resultDiv.className = `result ${severityClassMap[severity] || ''}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const resultDiv = document.getElementById('result');
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = 'Error occurred while predicting severity';
+                resultDiv.className = 'result severity-1';
+            });
+        });
+    </script>
+</body>
+</html>
